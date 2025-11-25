@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os/exec"
 	"strings"
 )
@@ -37,13 +38,12 @@ func BuildGraph() (*Graph, error) {
 		return nil, err
 	}
 
-	fmt.Println("modPath:", modulePath)
+	log.Println("modPath:", modulePath)
 
 	pkgs, err := listPackages(modulePath)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("packages: %#+v\n", pkgs)
 
 	graph := &Graph{
 		Nodes: make([]Node, 0, len(pkgs)),
@@ -89,10 +89,8 @@ func listPackages(modulePath string) ([]goListPkg, error) {
 			return nil, fmt.Errorf("error decoding go list json: %w", err)
 		}
 
-		fmt.Println("list:", p.ImportPath)
-
 		if strings.HasPrefix(p.ImportPath, modulePath) {
-			fmt.Println("append:", p.ImportPath)
+			log.Println("append:", p.ImportPath)
 			pkgs = append(pkgs, p)
 		}
 	}

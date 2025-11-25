@@ -10,6 +10,14 @@ Clone the repository and run below to build executable.
 make build
 ```
 
+## Usage
+
+built package run using
+```bash
+graphite <path_to_go_module>
+graphite .
+```
+
 ## Requirements
 
-To build the Go 1.24 is required.
+To build the Go 1.25 is required.
