@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"graphite/internal/graph"
 	"graphite/internal/server"
 	"log"
@@ -8,11 +10,32 @@ import (
 	"path/filepath"
 )
 
+var (
+	layoutFlag string
+)
+
 func main() {
-	path := "."
-	if len(os.Args) > 1 {
-		path = os.Args[1]
+	flag.StringVar(&layoutFlag, "layout", "cose", "graph layout (dagre, klay, cose, cola)")
+	flag.Parse()
+
+	allowed := map[string]bool{
+		"dagre": true,
+		"klay":  true,
+		"cose":  true,
+		"cola":  true,
 	}
+
+	if !allowed[layoutFlag] {
+		fmt.Fprintf(os.Stderr, "Error: unsupported layout '%s'\n", layoutFlag)
+		fmt.Fprintf(os.Stderr, "Valid layouts: dagre, klay, cose, cola\n")
+		os.Exit(1)
+	}
+
+	path := "."
+	if flag.NArg() > 0 {
+		path = flag.Arg(0)
+	}
+
 	absPath, err := filepath.Abs(path)
 	if err != nil {
 		log.Fatalf("invalid path: %v", err)
@@ -27,6 +50,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// TODO: Make this configurable
+	g.Layout = layoutFlag
 
 	server.Serve(g)
 }

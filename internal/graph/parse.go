@@ -21,6 +21,8 @@ type Edge struct {
 type Graph struct {
 	Nodes []Node `json:"nodes"`
 	Edges []Edge `json:"edges"`
+
+	Layout string `json:"layout"`
 }
 
 type goListPkg struct {
